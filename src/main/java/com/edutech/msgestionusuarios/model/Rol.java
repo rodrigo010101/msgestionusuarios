@@ -4,6 +4,8 @@ package com.edutech.msgestionusuarios.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 // import jakarta.persistence.Enumerated;
@@ -14,14 +16,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "rol")
 
 public class Rol {
 
@@ -42,6 +46,7 @@ public class Rol {
     private List<Permiso> permiso = new ArrayList<>();
 
     @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
     private List<Usuario> usuarios = new ArrayList<>();
 
 }
