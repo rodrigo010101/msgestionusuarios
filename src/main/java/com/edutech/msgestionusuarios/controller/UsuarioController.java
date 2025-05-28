@@ -1,7 +1,6 @@
 package com.edutech.msgestionusuarios.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,6 +20,7 @@ import com.edutech.msgestionusuarios.service.UsuarioService;
 
 @RestController
 @RequestMapping("/api/v1/usuario")
+
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
@@ -48,11 +48,11 @@ public class UsuarioController {
     public ResponseEntity<Usuario> getId(@PathVariable Integer id) {
         try {
             // obj
-            Optional<Usuario> userId = usuarioService.findById(id);
-            if (!userId.isPresent()) {
+            Usuario userId = usuarioService.findById(id);
+            if (userId == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(userId, HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -78,12 +78,12 @@ public class UsuarioController {
     public ResponseEntity<Usuario> deleteUsuario(@PathVariable Integer id) {
         try {
             // obj
-            Optional<Usuario> delUsuario = usuarioService.findById(id);
-            if (!delUsuario.isPresent()) {
+            Usuario delUsuario = usuarioService.findById(id);
+            if (delUsuario == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 usuarioService.deleteById(id);
-                return new ResponseEntity<>(delUsuario.get(), HttpStatus.ACCEPTED);
+                return new ResponseEntity<>(delUsuario, HttpStatus.ACCEPTED);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -94,8 +94,8 @@ public class UsuarioController {
     public ResponseEntity<Usuario> putUsuario(@RequestBody Usuario usuario, @PathVariable Integer id) {
         try {
             // obj
-            Optional<Usuario> userIdExisting = usuarioService.findById(id);
-            if (!userIdExisting.isPresent()) {
+            Usuario userIdExisting = usuarioService.findById(id);
+            if (userIdExisting == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             if (usuario.getNombre() == null || usuario.getNombre().trim().isEmpty()) {
@@ -115,7 +115,7 @@ public class UsuarioController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
                 // obj
-                Usuario newUsuario = userIdExisting.get();
+                Usuario newUsuario = usuarioService.findById(id);
                 newUsuario.setNombre(usuario.getNombre());
                 newUsuario.setApellido(usuario.getApellido());
                 usuarioService.save(newUsuario);
@@ -138,5 +138,4 @@ public class UsuarioController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    
 }

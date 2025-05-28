@@ -1,7 +1,6 @@
 package com.edutech.msgestionusuarios.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,12 +22,27 @@ public class PermisoService {
         return permisoRepository.findAll();
     }
 
-    public void deleteById(Integer idpermiso) {
+    public void deleteById(int idpermiso) {
         permisoRepository.deleteById(idpermiso);
     }
 
-    public Optional<Permiso> findById(Integer idpermiso) {
+    public Permiso findById(int idpermiso) {
         return permisoRepository.findById(idpermiso);
+    }
+
+    public boolean update(int idpermiso, Permiso permiso) {
+
+        Permiso perm = permisoRepository.findById(idpermiso);
+        if (perm == null) {
+            return false;
+        }
+        perm.setId(idpermiso);
+        perm.setNombrePermiso(permiso.getNombrePermiso());
+        perm.setDescripcion(permiso.getDescripcion());
+        perm.setRol(permiso.getRol());
+
+        permisoRepository.save(perm);
+        return true;
     }
 
 }

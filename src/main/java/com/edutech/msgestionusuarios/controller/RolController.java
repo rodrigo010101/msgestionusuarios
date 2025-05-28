@@ -1,8 +1,6 @@
 package com.edutech.msgestionusuarios.controller;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -23,6 +21,7 @@ import com.edutech.msgestionusuarios.service.UsuarioService;
 
 @RestController
 @RequestMapping("/api/v1/rol")
+
 public class RolController {
 
     @Autowired
@@ -75,11 +74,11 @@ public class RolController {
 
         try {
             // obj busRolId
-            Optional<Rol> busRolId = rolService.findById(idrol);
-            if (!busRolId.isPresent()) {
+            Rol busRolId = rolService.findById(idrol);
+            if (busRolId == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<>(busRolId.get(), HttpStatus.OK);
+                return new ResponseEntity<>(busRolId, HttpStatus.OK);
             }
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -92,12 +91,12 @@ public class RolController {
     public ResponseEntity<Rol> delRol(@PathVariable Integer idrol) {
         try {
             // obj delRolid
-            Optional<Rol> idRolDel = rolService.findById(idrol);
-            if (!idRolDel.isPresent()) {
+            Rol idRolDel = rolService.findById(idrol);
+            if (idRolDel == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 rolService.deleteById(idrol);
-                return new ResponseEntity<>(idRolDel.get(), HttpStatus.OK);
+                return new ResponseEntity<>(idRolDel, HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -110,8 +109,8 @@ public class RolController {
     public ResponseEntity<Rol> putRol(@RequestBody Rol rol, @PathVariable Integer idrol) {
         try {
             // obj idExisting
-            Optional<Rol> idExisting = rolService.findById(idrol);
-            if (!idExisting.isPresent()) {
+            Rol idExisting = rolService.findById(idrol);
+            if (idExisting == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             if (rol.getNombreRol().isEmpty() || rol.getNombreRol().trim().isEmpty()) {
@@ -121,7 +120,7 @@ public class RolController {
                 return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
             } else {
                 // objUpdate
-                Rol objUpdate = idExisting.get();
+                Rol objUpdate = rolService.findById(idrol);
                 objUpdate.setNombreRol(rol.getNombreRol());
                 objUpdate.setDescripcion(rol.getDescripcion());
                 rolService.save(objUpdate);

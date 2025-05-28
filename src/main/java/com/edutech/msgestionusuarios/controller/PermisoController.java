@@ -1,7 +1,6 @@
 package com.edutech.msgestionusuarios.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,6 +21,7 @@ import com.edutech.msgestionusuarios.service.PermisoService;
 
 @RestController
 @RequestMapping("/api/v1/permiso")
+
 public class PermisoController {
 
     @Autowired
@@ -30,14 +30,9 @@ public class PermisoController {
     @PostMapping
     public ResponseEntity<Permiso> crearPermiso(@RequestBody Permiso permiso) {
         try {
-            // obj existing
-            Optional<Permiso> existing = permisoService.findById(permiso.getId());
-            if (existing.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-            } else {
-                permisoService.save(permiso);
-                return new ResponseEntity<>(existing.get(), HttpStatus.NOT_ACCEPTABLE);
-            }
+            Permiso newPermiso = permisoService.save(permiso);
+
+            return new ResponseEntity<>(newPermiso, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -47,8 +42,8 @@ public class PermisoController {
     public ResponseEntity<Permiso> idExisting(@PathVariable Integer idpermiso) {
         try {
             // obj
-            Optional<Permiso> idExisting = permisoService.findById(idpermiso);
-            if (!idExisting.isPresent()) {
+            Permiso idExisting = permisoService.findById(idpermiso);
+            if (idExisting != null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -77,8 +72,8 @@ public class PermisoController {
     public ResponseEntity<Void> delExisting(@PathVariable Integer idpermiso) {
         try {
             // obj delExisting
-            Optional<Permiso> delExisting = permisoService.findById(idpermiso);
-            if (!delExisting.isPresent()) {
+            Permiso delExisting = permisoService.findById(idpermiso);
+            if (delExisting != null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 permisoService.deleteById(idpermiso);
@@ -94,20 +89,14 @@ public class PermisoController {
     @PutMapping("/{idpermiso}")
     public ResponseEntity<Permiso> updatePermiso(@RequestBody Permiso permiso, @PathVariable Integer idpermiso) {
         try {
-            // obj objExisting
-            Optional<Permiso> objExisting = permisoService.findById(idpermiso);
-            if (!objExisting.isPresent()) {
+            boolean peractualizado = permisoService.update(idpermiso, permiso);
+            if (!peractualizado) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } else {
-                // obj newObj
-                Permiso newObj = objExisting.get();
-                newObj.setNombrePermiso(permiso.getNombrePermiso());
-                newObj.setDescripcion(permiso.getDescripcion());
-                permisoService.save(newObj);
-                return new ResponseEntity<>(newObj, HttpStatus.ACCEPTED);
             }
+            Permiso actualizado = permisoService.findById(idpermiso);
+            return new ResponseEntity<>(actualizado, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
