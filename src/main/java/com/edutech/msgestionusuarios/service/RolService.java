@@ -30,7 +30,7 @@ public class RolService {
     }
 
     public boolean existByNombre(String nombreRol) {
-        return rolRepository.findByNombre(nombreRol);
+        return rolRepository.findByNombreRol(nombreRol);
     }
 
 }
