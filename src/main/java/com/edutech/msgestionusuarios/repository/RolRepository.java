@@ -1,6 +1,5 @@
 package com.edutech.msgestionusuarios.repository;
 
-import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,7 +14,7 @@ public interface RolRepository extends JpaRepository<Rol, Integer> {
     boolean findByNombre(String nombreRol);
 
     // List<Rol> findAllById(Iterable<Integer> ids);
-    List<Rol> findAll(Rol rol);
+    // List<Rol> findAll(Rol rol);
 
     // crear
     // Rol save(Rol rol);

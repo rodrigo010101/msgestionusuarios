@@ -1,7 +1,5 @@
 package com.edutech.msgestionusuarios.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.edutech.msgestionusuarios.model.Usuario;
@@ -16,6 +14,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     // List<Usuario> findAllById(Iterable<Integer> ids);
 
-    List<Usuario> findAll(Usuario usuario);
+    // List<Usuario> findAll(Usuario usuario);
 
 }

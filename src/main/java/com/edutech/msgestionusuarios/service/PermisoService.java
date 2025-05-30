@@ -39,8 +39,6 @@ public class PermisoService {
         perm.setId(idpermiso);
         perm.setNombrePermiso(permiso.getNombrePermiso());
         perm.setDescripcion(permiso.getDescripcion());
-        perm.setRol(permiso.getRol());
-
         permisoRepository.save(perm);
         return true;
     }

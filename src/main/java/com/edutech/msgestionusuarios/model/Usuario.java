@@ -3,8 +3,6 @@ package com.edutech.msgestionusuarios.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,12 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "usuario")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@EntityScan
-@Table(name = "usuario")
 
 public class Usuario {
     @Id
