@@ -92,13 +92,12 @@ public class PermisoController {
             boolean peractualizado = permisoService.update(idpermiso, permiso);
             if (!peractualizado) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                Permiso actualizado = permisoService.findById(idpermiso);
+                return new ResponseEntity<>(actualizado, HttpStatus.OK);
             }
-            Permiso actualizado = permisoService.findById(idpermiso);
-            return new ResponseEntity<>(actualizado, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    
 }

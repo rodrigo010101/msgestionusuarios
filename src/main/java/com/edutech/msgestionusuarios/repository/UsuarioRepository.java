@@ -11,9 +11,4 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     boolean findByNombre(String nombre);
 
     boolean findByApellido(String apellido);
-
-    // List<Usuario> findAllById(Iterable<Integer> ids);
-
-    // List<Usuario> findAll(Usuario usuario);
-
 }
