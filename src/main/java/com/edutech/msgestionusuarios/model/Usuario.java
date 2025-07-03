@@ -38,7 +38,6 @@ public class Usuario {
     private String apellido;
     @Column(nullable = false)
     private boolean estado = true;
-    // private boolean activo =true;
 
     @ManyToMany
     @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
