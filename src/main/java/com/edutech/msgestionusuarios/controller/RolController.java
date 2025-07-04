@@ -1,6 +1,8 @@
 package com.edutech.msgestionusuarios.controller;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -38,11 +40,9 @@ public class RolController {
             if (rol.getId() != null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            if (rol.getNombreRol() == null || rol.getNombreRol().trim().isEmpty()) {
+            if (rol.getNombreRol() == null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            if (rolService.existByNombre(rol.getNombreRol())) {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+
             } else {
                 // obj new
                 Rol newRol = rolService.save(rol);
@@ -75,11 +75,11 @@ public class RolController {
 
         try {
             // obj busRolId
-            Rol busRolId = rolService.findById(idrol);
+            Optional<Rol> busRolId = rolService.findById(idrol);
             if (busRolId == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<>(busRolId, HttpStatus.OK);
+                return new ResponseEntity<>(busRolId.get(), HttpStatus.OK);
             }
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -92,12 +92,12 @@ public class RolController {
     public ResponseEntity<Rol> delRol(@PathVariable Integer idrol) {
         try {
             // obj delRolid
-            Rol idRolDel = rolService.findById(idrol);
-            if (idRolDel == null) {
+            Optional<Rol> idRolDel = rolService.findById(idrol);
+            if (idRolDel.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 rolService.deleteById(idrol);
-                return new ResponseEntity<>(idRolDel, HttpStatus.OK);
+                return new ResponseEntity<>(idRolDel.get(), HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -110,22 +110,22 @@ public class RolController {
     public ResponseEntity<Rol> putRol(@RequestBody Rol rol, @PathVariable Integer idrol) {
         try {
             // obj idExisting
-            Rol idExisting = rolService.findById(idrol);
+            Optional<Rol> idExisting = rolService.findById(idrol);
             if (idExisting == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            if (rol.getNombreRol().isEmpty() || rol.getNombreRol().trim().isEmpty()) {
+            if (rol.getNombreRol() == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
             }
             if (rol.getDescripcion() == null || rol.getDescripcion().trim().isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
             } else {
                 // objUpdate
-                Rol objUpdate = rolService.findById(idrol);
-                objUpdate.setNombreRol(rol.getNombreRol());
-                objUpdate.setDescripcion(rol.getDescripcion());
-                rolService.save(objUpdate);
-                return new ResponseEntity<>(objUpdate, HttpStatus.OK);
+                Optional<Rol> objUpdate = rolService.findById(idrol);
+                objUpdate.get().setNombreRol(rol.getNombreRol());
+                objUpdate.get().setDescripcion(rol.getDescripcion());
+                rolService.save(objUpdate.get());
+                return new ResponseEntity<>(objUpdate.get(), HttpStatus.OK);
             }
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);

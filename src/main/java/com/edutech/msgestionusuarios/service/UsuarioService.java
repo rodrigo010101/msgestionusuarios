@@ -1,6 +1,7 @@
 package com.edutech.msgestionusuarios.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    public Usuario findById(int id) {
+    public Optional<Usuario> findById(Integer id) {
         return usuarioRepository.findById(id);
     }
 
@@ -43,21 +44,24 @@ public class UsuarioService {
 
     @Transactional
     public void activarCuenta(Integer id) {
-        var userid = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con " + id));
+        Usuario userid = usuarioRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("No se encontro el id " + id));
         userid.activarCuenta();
+        usuarioRepository.save(userid);
     }
 
     @Transactional
     public void desactivarCuenta(Integer id) {
-        var userId = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el id" + id));
+        Usuario userId = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No se encontro el id" + id));
         userId.desactivarCuenta();
+        usuarioRepository.save(userId);
     }
 
     public boolean estadoActivo(Integer id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado")).isEstado();
+
     }
 
     public void asignarRol(Integer usuarioId, List<Integer> id) {
@@ -69,5 +73,20 @@ public class UsuarioService {
         userId.getRoles().clear();
         userId.getRoles().addAll(roles);
         usuarioRepository.save(userId);
+    }
+
+    public boolean udpdateUsuario(int id, Usuario usuario) {
+
+        Optional<Usuario> user = usuarioRepository.findById(id);
+        user.get().setId(id);
+        user.get().setNameUsuario(usuario.getNameUsuario());
+        user.get().setPassUsuario(usuario.getPassUsuario());
+        user.get().setNombre(usuario.getNombre());
+        user.get().setApellido(usuario.getApellido());
+        user.get().setEmail(usuario.getEmail());
+        user.get().setEstado(usuario.isEstado());
+        user.get().setRoles(usuario.getRoles());
+        usuarioRepository.save(user.get());
+        return true;
     }
 }
