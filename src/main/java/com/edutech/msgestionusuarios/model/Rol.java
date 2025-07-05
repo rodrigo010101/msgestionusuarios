@@ -33,7 +33,7 @@ public class Rol {
     private Integer id;
     @Enumerated(EnumType.STRING)
     @Column(name = "nombreRol", nullable = false, unique = true)
-    private tipoRol nombreRol;
+    private TipoRol nombreRol;
 
     // descripcion del rol , rol con todos los permisos,rol basico de usuario,puede
     // moderar contenido o invitado
@@ -44,14 +44,25 @@ public class Rol {
     @JoinTable(name = "rol_permiso", joinColumns = @JoinColumn(name = "rol_id"), inverseJoinColumns = @JoinColumn(name = "permiso_id"))
     private List<Permiso> permiso = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean estadoRol = true;
+
     @ManyToMany(mappedBy = "roles")
     @JsonBackReference
     private List<Usuario> usuarios = new ArrayList<>();
 
-    public enum tipoRol {
+    public enum TipoRol {
         ADMIN,
         USER,
         MODERADOR,
         INVITADO
+    }
+
+    public void desactivarRol(int id) {
+        this.estadoRol = false;
+    }
+
+    public void activarRol(int id) {
+        this.estadoRol = true;
     }
 }

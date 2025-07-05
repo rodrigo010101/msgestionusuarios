@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.edutech.msgestionusuarios.model.Rol;
 import com.edutech.msgestionusuarios.repository.RolRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class RolService {
     @Autowired
@@ -32,6 +34,34 @@ public class RolService {
 
     public boolean existByNombre(String nombreRol) {
         return rolRepository.findByNombreRol(nombreRol);
+    }
+
+    public boolean updateRol(int id, Rol rol) {
+
+        Optional<Rol> nuevoRol = rolRepository.findById(id);
+        nuevoRol.get().setId(id);
+        nuevoRol.get().setNombreRol(rol.getNombreRol());
+        nuevoRol.get().setDescripcion(rol.getDescripcion());
+        nuevoRol.get().setPermiso(rol.getPermiso());
+        nuevoRol.get().setUsuarios(rol.getUsuarios());
+        rolRepository.save(nuevoRol.get());
+        return true;
+    }
+
+    @Transactional
+    public void activarCuentaRol(int id) {
+        Rol rolActivo = rolRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rol con " + id + " no encontrado"));
+        rolActivo.activarRol(id);
+        rolRepository.save(rolActivo);
+    }
+
+    @Transactional
+    public void desactivarCuenta(int id) {
+        Rol rolDescativar = rolRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rol con id " + id + " no encontrado"));
+        rolDescativar.desactivarRol(id);
+        rolRepository.save(rolDescativar);
     }
 
 }

@@ -25,17 +25,29 @@ public class Permiso {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "nombre_permiso", nullable = false, length = 100)
-    private tipoPermiso nombrePermiso;
+    private TipoPermiso nombrePermiso;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "descripcion", nullable = false, length = 100)
-    private tipoDescripcion descripcion;
+    private TipoAcceso tipoAcceso;
 
-    public enum tipoDescripcion {
+    public enum TipoAcceso {
         LECTURA, ESCRITURA, ADMINISTRACION, EJECUCION
     }
 
-    public enum tipoPermiso {
+    public enum TipoPermiso {
         CREATE, READ, UPDATE, DELETE, MANAGE_USERS
     }
+
+    @Column(nullable = false)
+    private boolean estadoPermiso = true;
+
+    public void activarPermiso(int id) {
+        this.estadoPermiso = true;
+    }
+
+    public void desactivarPermiso(int id) {
+        this.estadoPermiso = false;
+    }
+
 }

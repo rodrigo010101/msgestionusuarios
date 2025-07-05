@@ -1,6 +1,7 @@
 package com.edutech.msgestionusuarios.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -42,7 +43,7 @@ public class PermisoController {
     public ResponseEntity<Permiso> idExisting(@PathVariable Integer idpermiso) {
         try {
             // obj
-            Permiso idExisting = permisoService.findById(idpermiso);
+            Optional<Permiso> idExisting = permisoService.findById(idpermiso);
             if (idExisting != null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
@@ -72,7 +73,7 @@ public class PermisoController {
     public ResponseEntity<Void> delExisting(@PathVariable Integer idpermiso) {
         try {
             // obj delExisting
-            Permiso delExisting = permisoService.findById(idpermiso);
+            Optional<Permiso> delExisting = permisoService.findById(idpermiso);
             if (delExisting != null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
@@ -89,12 +90,12 @@ public class PermisoController {
     @PutMapping("/{idpermiso}")
     public ResponseEntity<Permiso> updatePermiso(@RequestBody Permiso permiso, @PathVariable Integer idpermiso) {
         try {
-            boolean peractualizado = permisoService.update(idpermiso, permiso);
+            boolean peractualizado = permisoService.updatePermiso(idpermiso, permiso);
             if (!peractualizado) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                Permiso actualizado = permisoService.findById(idpermiso);
-                return new ResponseEntity<>(actualizado, HttpStatus.OK);
+                Optional<Permiso> actualizado = permisoService.findById(idpermiso);
+                return new ResponseEntity<>(actualizado.get(), HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,12 +1,17 @@
 package com.edutech.msgestionusuarios.service;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.management.RuntimeErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edutech.msgestionusuarios.model.Permiso;
 import com.edutech.msgestionusuarios.repository.PermisoRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class PermisoService {
@@ -22,25 +27,41 @@ public class PermisoService {
         return permisoRepository.findAll();
     }
 
-    public void deleteById(int idpermiso) {
+    public void deleteById(Integer idpermiso) {
         permisoRepository.deleteById(idpermiso);
     }
 
-    public Permiso findById(int idpermiso) {
+    public Optional<Permiso> findById(Integer idpermiso) {
         return permisoRepository.findById(idpermiso);
     }
 
-    public boolean update(int idpermiso, Permiso permiso) {
+    public boolean updatePermiso(int idpermiso, Permiso permiso) {
 
-        Permiso perm = permisoRepository.findById(idpermiso);
+        Optional<Permiso> perm = permisoRepository.findById(idpermiso);
         if (perm == null) {
             return false;
         }
-        perm.setId(idpermiso);
-        perm.setNombrePermiso(permiso.getNombrePermiso());
-        perm.setDescripcion(permiso.getDescripcion());
-        permisoRepository.save(perm);
+        perm.get().setId(idpermiso);
+        perm.get().setNombrePermiso(permiso.getNombrePermiso());
+        perm.get().setTipoAcceso(permiso.getTipoAcceso());
+        permisoRepository.save(perm.get());
         return true;
+    }
+
+    @Transactional
+    public void activarCuentaPermiso(int id) {
+        Permiso activo = permisoRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("Id " + id + " no encontrado."));
+        activo.activarPermiso(id);
+        permisoRepository.save(activo);
+
+    }
+
+    public void desactivarCuentaPermiso(int id) {
+        Permiso desactivar = permisoRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("Id " + id + " no encontrado."));
+        desactivar.desactivarPermiso(id);
+        permisoRepository.save(desactivar);
     }
 
 }
